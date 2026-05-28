@@ -28,7 +28,7 @@ function isUniqueEmailError(e) {
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 // TCP port for the web server — change here if 3000 is already in use on your machine.
-const port = 3000;
+const port = 3001;
 
 // Parse JSON request bodies (e.g. POST { "name": "...", "email": "..." }) into req.body.
 // Uploads send Excel files as base64 JSON, so this page needs a larger body limit.
@@ -129,6 +129,32 @@ app.delete("/api/users/:id", (req, res) => {
 registerExcelUploadRoutes(app);
 registerExploreRoutes(app);
 
+// Login page 
+app.post("/ipa/login", (req, res) => {
+  try {
+    const email = String(req.body?.email ?? "").trim();
+    const password = String(req.body?.password ?? "");
+
+    if (!email || !password) {
+      return res.status(400).json({ error: "email and password required" });
+    }
+
+    const db = getDb();
+    const row = db
+      .prepare("SELECT id, name, email FROM users WHERE email = ? AND password = ?")
+      .get(email, password);
+      
+    if (!row) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    // dont send password back to the brower (security)
+    res.json(row);
+  } catch (e) {
+    res.status(500).json({ error: String(e.message) });
+
+  }
+});
 /**
  * Run arbitrary SQL from the SQL console page.
  * INSECURE: never expose this on the public internet — any caller can read or change the whole database.

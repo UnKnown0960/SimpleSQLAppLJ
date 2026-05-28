@@ -16,6 +16,7 @@ function main() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       email TEXT NOT NULL UNIQUE,
+      password TEXT NOT NULL,
       created_at TEXT DEFAULT (datetime('now'))
     )
   `);
@@ -24,19 +25,21 @@ function main() {
   db.exec("DELETE FROM users");
 
   // One prepared INSERT reused in the loop (slightly more efficient than preparing inside the loop).
-  const insert = db.prepare("INSERT INTO users (name, email) VALUES (?, ?)");
+  const insert = db.prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)"
+  );
+  
   const users = [
-    ["Alice Carter", "alice@example.com"],
-    ["Bob Singh", "bob@example.com"],
-    ["Carol Diaz", "carol@example.com"],
-    ["Dan Wu", "dan@example.com"],
-    ["Eve Martin", "eve@example.com"],
+    ["Alice Carter", "alice@example.com", "passwordAlice"],
+    ["Bob Singh", "bob@example.com", "passwordBob"],
+    ["Carol Diaz", "carol@example.com", "passwordCarol"],
+    ["Dan Wu", "dan@example.com", "passwordDan"],
+    ["Eve Martin", "eve@example.com", "passwordEve"],
   ];
 
-  for (const [name, email] of users) insert.run(name, email);
+  for (const [name, email, password] of users) insert.run(name, email, password);
 
-  const rows = db.prepare("SELECT id, name, email FROM users ORDER BY id").all();
-
+  const rows = db.prepare("SELECT id, name, email, password FROM users ORDER BY id").all();
+ 
   console.log(`SQLite database file: ${getSqlitePath()}`);
   console.log(`Seeded ${rows.length} users:`);
   console.table(rows);

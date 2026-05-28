@@ -8,6 +8,7 @@ h1 {
   font-size: 1.35rem;
   font-weight: 600;
   margin: 0 0 16px;
+  justify-content: center;
 }
 
 h2 {

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login Page</title>      
+ </head>
+ <body>
+    <h1>Login page</h1>
+    
+ <form id="loginForm">
+  <div class="field">
+    <span class="field-label">Email</span>
+    <input id="loginEmail" class="field-input" type="email" required autocomplete="username"
+   />
+  </div>
+  <div class="field">
+    <span class="field-label">Password</span>
+    <input id="loginPassword" class="field-input" type="password" required autocomplete="current-password"
+   />
+  </div>
+
+    <a href="index.html" >admin</a>
+  
+
+
+  <p class="form-actions">
+  <button type = "submit" class = "primary">Login</button>
+  </p>
+  <p id = "loginErr" class="err" hidden></p>
+ </form>
+
+ 
+
+
+ <script src="/js/auth.js" defer></script>
+ <script src="/js/login.js" defer></script>
+ </body>
+</html>

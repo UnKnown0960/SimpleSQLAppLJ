@@ -29,3 +29,6 @@ nav {
   font-size: 15px;
   font-family: system-ui, "Segoe UI", sans-serif;
 }
+#loginForm {
+  max-width: 24rem;
+}

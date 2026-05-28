@@ -81,7 +81,7 @@ function drawTable(users) {
     // Normalize missing fields — JSON might omit keys; null is also possible from the DB driver
     var nm = person.name === undefined || person.name === null ? "" : person.name;
     var em = person.email === undefined || person.email === null ? "" : person.email;
-    var when =
+    var when = person.password === undefined || person.password === null ? "" : person.password;
       person.created_at === undefined || person.created_at === null ? "" : person.created_at;
 
     html = html + "<tr>";
@@ -125,11 +125,13 @@ async function saveRow(saveButton) {
   var tr = td.parentElement;
   var nameBox = tr.querySelector(".row-name");
   var emailBox = tr.querySelector(".row-email");
+  var passwordBox = tr.querySelector(".row-password");
   var id = saveButton.getAttribute("data-id");
 
   var payload = {
     name: nameBox.value.trim(),
     email: emailBox.value.trim(),
+    password: passwordBox.value.trim(),
   };
 
   var response = await fetch("/api/users/" + id, {
@@ -221,3 +223,20 @@ userForm.addEventListener("submit", async function (evt) {
 });
 
 loadUsers();
+
+var whoAmI = document.getElementById("whoAmI");
+var logoutBtn = document.getElementById("logoutBtn");
+
+if (whoAmI) {
+  var me = getLoggedInUser();
+  if (me) {
+    whoAmI.textContent = "Logged in as " + me.name + " (" + me.email + ")";
+  }
+}
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", function () {
+    clearLoggedInUser();
+    window.location.href = "/login.html";
+  });
+}
