@@ -27,12 +27,12 @@ function clearLoggedInUser() {
 
 function requireLogin() {
     if (!getLoggedInUser()) {
-        window.location.href = "/login.html";
+        window.location.href = "/index.html";
     }
 }
 
 function redirectIfALreadyLoggedIn() {
     if (getLoggedInUser()) {
-        window.location.href = "/login.html";
+        window.location.href = "/index.html";
     }
 }

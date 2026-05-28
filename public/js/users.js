@@ -16,6 +16,8 @@ var userForm = document.getElementById("userForm"); // "Add a user" <form>
 var formErr = document.getElementById("formErr"); // Message under form if POST failed
 var nameInput = document.getElementById("name");
 var emailInput = document.getElementById("email");
+var passwordInput = document.getElementById("password");
+var rankInput = document.getElementById("rank");
 
 /**
  * Escape text so putting it inside HTML strings does not become real tags/scripts.
@@ -60,6 +62,12 @@ async function loadUsers() {
 }
 
 /**
+ * After adding user to database move to main page if not error
+ */
+
+
+
+/**
  * Build an HTML <table> as one big string (no templating libraries in this starter project).
  * Each user row carries data-id="..." on buttons so clicks know WHICH id to SAVE or DELETE.
  */
@@ -72,8 +80,8 @@ function drawTable(users) {
   var html = "<table><thead><tr>";
   html =
     html +
-    "<th>id</th><th>Name</th><th>Email</th><th>Saved at</th><th></th></tr></thead><tbody>";
-
+    "<th>id</th><th>Name</th><th>Email</th><th>Password</th><th>rank</th><th>Saved at</th><th></th></tr></thead><tbody>";
+  
   
   for (var rowIndex = 0; rowIndex < users.length; rowIndex++) {
     var person = users[rowIndex];
@@ -81,12 +89,13 @@ function drawTable(users) {
     // Normalize missing fields — JSON might omit keys; null is also possible from the DB driver
     var nm = person.name === undefined || person.name === null ? "" : person.name;
     var em = person.email === undefined || person.email === null ? "" : person.email;
-    var when = person.password === undefined || person.password === null ? "" : person.password;
-      person.created_at === undefined || person.created_at === null ? "" : person.created_at;
+    var pw = person.password === undefined || person.password === null ? "" : person.password;
+    var rn = person.rank === undefined || person.rank === null ? "" : person.rank;
+    var when = person.created_at === undefined || person.created_at === null ? "" : person.created_at;
 
     html = html + "<tr>";
     html = html + "<td>" + idText + "</td>";
-    html =
+    html = html + "<td>" + escapeHtml(String(rn)) + "</td>";
       html +
       '<td><input class="cell-input row-name" value="' +
       escapeHtml(nm) +
@@ -126,12 +135,14 @@ async function saveRow(saveButton) {
   var nameBox = tr.querySelector(".row-name");
   var emailBox = tr.querySelector(".row-email");
   var passwordBox = tr.querySelector(".row-password");
+  var rankBox = tr.querySelector(".row-rank");
   var id = saveButton.getAttribute("data-id");
 
   var payload = {
     name: nameBox.value.trim(),
     email: emailBox.value.trim(),
     password: passwordBox.value.trim(),
+    rank: rankBox.value.trim(),
   };
 
   var response = await fetch("/api/users/" + id, {
@@ -222,6 +233,7 @@ userForm.addEventListener("submit", async function (evt) {
   await loadUsers();
 });
 
+// Displays whos currently logged in (if any) and handles logout button — same code runs on every page that includes users.js
 loadUsers();
 
 var whoAmI = document.getElementById("whoAmI");

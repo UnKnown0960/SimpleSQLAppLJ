@@ -6,17 +6,36 @@
     <title>Create Account</title>      
 </head>
 <body>
-    <h1>Create Account</h1>
+    <h1>Create Account</h1>   
+    <div class="form-section">
+      <form id="createForm">
+        <div class="field">
+          <span class="field-label">Name</span>
+          <input id="name" class="field-input" name="name" required autocomplete="off" />
+        </div>
+        <div class="field">
+          <span class="field-label">Email</span>
+          <input id="email" class="field-input" name="email" type="email" required autocomplete="off" />
+        </div>
+        <div class="field">
+          <span class="field-label">Password</span>
+          <input id="password" class="field-input" name="password" type="password" required autocomplete="off" />
+        </div>
+        <p class="form-actions">
+          <button type="submit" class="primary" id="addBtn">Add</button>
+        </p>
+        <p id="createErr" class="err" hidden></p>
+    </div>
+
+  <div>
     
-    <input id="nameBox" type="text">name</input> <br>
-    <input id="emailBox">email</input> <br>
-    <input id="passwordBox">Create password</input> 
-<br> <br>
-<h3>Account type</h3>
-    <input value="1" type="checkbox">User</input>
-    <input value="2" type="checkbox">Company</input>
-    <br>
-    <button name="createButton" type="submit">Create</button> 
+  </div>
+</form>
+
+    <button name="createBtn" type="submit">Create</button>
+    <p id="createErr" hidden style="color: red;"></p>
+
+<script src="/js/create.js"></script>
 </body>
 
 </html>

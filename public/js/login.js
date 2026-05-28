@@ -35,5 +35,5 @@ loginForm.addEventListener("submit", async function (evt) {
 
  var user = JSON.parse(bodyText);
  setLoggedInUser(user);
- window.location.href = "/index.html";
+ window.location.href = "/explore.html";
 });

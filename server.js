@@ -44,7 +44,7 @@ app.get("/api/users", (_req, res) => {
     const db = getDb();
     // prepare() compiles SQL once; ? placeholders are filled safely when you call .all() / .run().
     const rows = db
-      .prepare("SELECT id, name, email, created_at FROM users ORDER BY id")
+      .prepare("SELECT id, name, email, password, rank, created_at FROM users ORDER BY id")
       .all();
     res.json(rows);
   } catch (e) {
@@ -57,7 +57,7 @@ app.get("/api/users/:id", (req, res) => {
   try {
     const db = getDb();
     const row = db
-      .prepare("SELECT id, name, email, created_at FROM users WHERE id = ?")
+      .prepare("SELECT id, name, email, password, rank, created_at FROM users WHERE id = ?")
       .get(req.params.id);
     if (!row) return res.status(404).json({ error: "Not found" });
     res.json(row);
@@ -69,17 +69,17 @@ app.get("/api/users/:id", (req, res) => {
 // Create a new user. 201 = "Created". Body must be JSON with name and email.
 app.post("/api/users", (req, res) => {
   try {
-    const { name, email } = req.body ?? {};
-    if (!name || !email) {
-      return res.status(400).json({ error: "name and email required" });
+    const { name, email, password } = req.body ?? {};
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "name, email, and password required" });
     }
     const db = getDb();
     const info = db
-      .prepare("INSERT INTO users (name, email) VALUES (?, ?)")
-      .run(String(name).trim(), String(email).trim());
+      .prepare("INSERT INTO users (name, email, password, rank) VALUES (?, ?, ?, 0)")
+      .run(String(name).trim(), String(email).trim(), String(password).trim());
     // After INSERT, lastInsertRowid is the new row's id; we SELECT it back to return full row (including created_at).
     const row = db
-      .prepare("SELECT id, name, email, created_at FROM users WHERE id = ?")
+      .prepare("SELECT id, name, email, password, created_at, rank FROM users WHERE id = ?")
       .get(Number(info.lastInsertRowid));
     res.status(201).json(row);
   } catch (e) {
@@ -93,17 +93,17 @@ app.post("/api/users", (req, res) => {
 // Replace name/email for an existing id. 404 if that id does not exist.
 app.put("/api/users/:id", (req, res) => {
   try {
-    const { name, email } = req.body ?? {};
-    if (!name || !email) {
-      return res.status(400).json({ error: "name and email required" });
+    const { name, email, password } = req.body ?? {};
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "name, email and password required" });
     }
     const db = getDb();
     const info = db
-      .prepare("UPDATE users SET name = ?, email = ? WHERE id = ?")
-      .run(String(name).trim(), String(email).trim(), req.params.id);
+      .prepare("UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?")
+      .run(String(name).trim(), String(email).trim(), String(password).trim(), req.params.id);
     if (Number(info.changes) === 0) return res.status(404).json({ error: "Not found" });
     const row = db
-      .prepare("SELECT id, name, email, created_at FROM users WHERE id = ?")
+      .prepare("SELECT id, name, email, password, created_at, rank FROM users WHERE id = ?")
       .get(req.params.id);
     res.json(row);
   } catch (e) {
@@ -141,8 +141,8 @@ app.post("/ipa/login", (req, res) => {
 
     const db = getDb();
     const row = db
-      .prepare("SELECT id, name, email FROM users WHERE email = ? AND password = ?")
-      .get(email, password);
+      .prepare("SELECT id, name, email, password, rank FROM users WHERE email = ? AND password = ? AND rank = ?")
+      .get(email, password, req.body?.rank ?? 0);
       
     if (!row) {
       return res.status(401).json({ error: "Invalid email or password" });
@@ -199,7 +199,7 @@ const server = app.listen(port, () => {
 server.on("error", (err) => {
   if (err.code === "EADDRINUSE") {
     console.error(
-      `Port ${port} is already in use. Stop the other process or change \`const port = 3000\` near the top of server.js`
+      `Port ${port} is already in use. Stop the other process or change \`const port = 3001\` near the top of server.js`
     );
   } else {
     console.error(err);

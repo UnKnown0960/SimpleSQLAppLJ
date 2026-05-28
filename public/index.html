@@ -33,6 +33,14 @@
           <span class="field-label">Email</span>
           <input id="email" class="field-input" name="email" type="email" required autocomplete="off" />
         </div>
+        <div class="field">
+          <span class="field-label">Password</span>
+          <input id="password" class="field-input" name="password" type="password" required autocomplete="off" />
+        </div>
+          <div class="field">
+            <span class="field-label">Rank</span>
+            <input id="rank" class="field-input" name="rank" type="number" required autocomplete="off" />
+          </div>
         <p class="form-actions">
           <button type="submit" class="primary" id="addBtn">Add</button>
         </p>
@@ -43,6 +51,7 @@
     <h2>Everyone in the database</h2>
     <p id="hint" class="hint">Change letters in a row and click <strong>Save</strong> on that row to store it.</p>
     <div id="tableWrap"></div>
+    <div id="rankDisplay"></div> <!-- does nothing yet (empty) -->
 
     <script src="/js/users.js" defer></script>
   </body>

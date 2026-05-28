@@ -9,7 +9,7 @@ import { getDb, getSqlitePath } from "../lib/db.js";
 
 function main() {
   const db = getDb();
-
+  
   // IF NOT EXISTS = safe to run every time; won't wipe an existing file, only ensures the table exists.
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
@@ -17,6 +17,7 @@ function main() {
       name TEXT NOT NULL,
       email TEXT NOT NULL UNIQUE,
       password TEXT NOT NULL,
+      rank INTEGER DEFAULT (0),
       created_at TEXT DEFAULT (datetime('now'))
     )
   `);
@@ -36,7 +37,7 @@ function main() {
     ["Eve Martin", "eve@example.com", "passwordEve"],
   ];
 
-  for (const [name, email, password] of users) insert.run(name, email, password);
+  for (const [name, email, password, rank] of users) insert.run(name, email, password);
 
   const rows = db.prepare("SELECT id, name, email, password FROM users ORDER BY id").all();
  
